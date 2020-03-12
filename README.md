@@ -16,3 +16,7 @@ Install access to URL package
 composer require annotations
 ````
 Config your dotenv
+Install package for migrations
+````
+composer require migrations
+````
