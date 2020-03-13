@@ -37,6 +37,14 @@ class CompaniesRepository extends ServiceEntityRepository
         $this->manager->persist($newCompanies);
         $this->manager->flush();
     }
+
+    public function updateCompanies(Companies $companies): Companies
+    {
+        $this->manager->persist($companies);
+        $this->manager->flush();
+
+        return $companies;
+    }
     // /**
     //  * @return Companies[] Returns an array of Companies objects
     //  */

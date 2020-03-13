@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route(path="/api/")
  */
-class CompanyController extends AbstractController
+class CompanyController
 {
     private $companiesRepository;
     public function __construct(CompaniesRepository $companyRepository)
@@ -44,22 +44,61 @@ class CompanyController extends AbstractController
         $this->companiesRepository->saveCompanies($name, $unique_code, $description,$logo);
         return new JsonResponse(['status' => 'Company created!'], Response::HTTP_CREATED);
     }
-//    /**
-//     * @Route("company/{id}", name="get_one_company", methods={"GET"})
-//     */
-//    public function get($id): JsonResponse
-//    {
-//        $company = $this->companiesRepository->findOneBy(['id' => $id]);
-//
-//        $data = [
-//            'id' => $company->getId(),
-//            'name' => $company->getName(),
-//            'unique_code' => $company->getUniqueCode(),
-//            'description' => $company->getDescription(),
-//            'logo' => $company->getLogo(),
-//        ];
-//
-//        return new JsonResponse($data, Response::HTTP_OK);
-//    }
+    /**
+     * @Route("company/{id}", name="get_one_company", methods={"GET"})
+     */
+    public function get($id): JsonResponse
+    {
+        $company = $this->companiesRepository->findOneBy(['id' => $id]);
+
+        $data = [
+            'id' => $company->getId(),
+            'name' => $company->getName(),
+            'unique_code' => $company->getUniqueCode(),
+            'description' => $company->getDescription(),
+            'logo' => $company->getLogo(),
+        ];
+
+        return new JsonResponse($data, Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("company", name="getAll_company", methods={"GET"})
+     */
+    public function getAll(): JsonResponse
+    {
+        $companies = $this->companiesRepository->findAll();
+        $data = [];
+
+        foreach ($companies as $company) {
+            $data = [
+                'id' => $company->getId(),
+                'name' => $company->getName(),
+                'unique_code' => $company->getUniqueCode(),
+                'description' => $company->getDescription(),
+                'logo' => $company->getLogo(),
+            ];
+        }
+
+        return new JsonResponse($data, Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("company/{id}", name="update_company", methods={"PUT"})
+     */
+    public function update($id, Request $request): JsonResponse
+    {
+        $company= $this->companiesRepository->findOneBy(['id' => $id]);
+        $data = json_decode($request->getContent(), true);
+
+        empty($data['name']) ? true : $company->setName($data['name']);
+        empty($data['unique_code']) ? true : $company->setUniqueCode($data['unique_code']);
+        empty($data['description']) ? true : $company->setDescription($data['description']);
+
+        $updatedCompanies = $this->companiesRepository->updateCompanies($company);
+
+        return new JsonResponse(['status' => 'Company updated!'], Response::HTTP_OK);
+    }
+
 
 }
