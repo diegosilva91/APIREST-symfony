@@ -16,7 +16,12 @@ Install access to URL package
 composer require annotations
 ````
 Config your dotenv
-Install package for migrations
+Run for create a schema
 ````
-composer require migrations
+bin/console doctrine:database:create
+````
+Run for migrations
+````
+bin/console make:migration
+bin/console doctrine:migrations:migrate
 ````
