@@ -44,8 +44,11 @@ class CompanyController
         $this->companiesRepository->saveCompanies($name, $unique_code, $description,$logo);
         return new JsonResponse(['status' => 'Company created!'], Response::HTTP_CREATED);
     }
+
     /**
      * @Route("company/{id}", name="get_one_company", methods={"GET"})
+     * @param $id
+     * @return JsonResponse
      */
     public function get($id): JsonResponse
     {
@@ -85,6 +88,9 @@ class CompanyController
 
     /**
      * @Route("company/{id}", name="update_company", methods={"PUT"})
+     * @param $id
+     * @param Request $request
+     * @return JsonResponse
      */
     public function update($id, Request $request): JsonResponse
     {
@@ -94,11 +100,25 @@ class CompanyController
         empty($data['name']) ? true : $company->setName($data['name']);
         empty($data['unique_code']) ? true : $company->setUniqueCode($data['unique_code']);
         empty($data['description']) ? true : $company->setDescription($data['description']);
+        empty($data['logo']) ? true : $company->setLogo($data['logo']);
 
         $updatedCompanies = $this->companiesRepository->updateCompanies($company);
 
         return new JsonResponse(['status' => 'Company updated!'], Response::HTTP_OK);
     }
 
+    /**
+     * @Route("company/{id}", name="delete_company", methods={"DELETE"})
+     * @param $id
+     * @return JsonResponse
+     */
+    public function delete($id): JsonResponse
+    {
+        $company = $this->companiesRepository->findOneBy(['id' => $id]);
+
+        $this->companiesRepository->removeCompany($company);
+
+        return new JsonResponse(['status' => 'Company deleted'], Response::HTTP_OK);
+    }
 
 }
